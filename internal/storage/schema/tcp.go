@@ -7,11 +7,11 @@ import (
 
 type TCPCountEntity struct {
 	timestamp int64
-	tcp_data  map[string]int32
+	tcpData   map[string]int32
 }
 
 type TCPCountDto struct {
-	tcp_data map[string]int32
+	tcpData map[string]int32
 }
 
 type TCPCountTable struct {
@@ -30,7 +30,7 @@ func (t *TCPCountTable) AddEntity(d TCPCountDto) {
 	defer t.mtx.Unlock()
 	e := &TCPCountEntity{
 		timestamp: time.Now().Unix(),
-		tcp_data:  d.tcp_data,
+		tcpData:   d.tcpData,
 	}
 	t.entities = append(t.entities, e)
 }
@@ -40,7 +40,7 @@ func (t *TCPCountTable) GetAverage(period int32) TCPCountDto {
 	defer t.mtx.RUnlock()
 	currentTime := time.Now().Unix()
 	sum := &TCPCountDto{
-		tcp_data: map[string]int32{},
+		tcpData: map[string]int32{},
 	}
 	num := int32(0)
 	for i := len(t.entities) - 1; i >= 0; i-- {
@@ -48,21 +48,21 @@ func (t *TCPCountTable) GetAverage(period int32) TCPCountDto {
 			break
 		}
 		num++
-		for k, v := range t.entities[i].tcp_data {
-			if _, ok := sum.tcp_data[k]; !ok {
-				sum.tcp_data[k] = v
+		for k, v := range t.entities[i].tcpData {
+			if _, ok := sum.tcpData[k]; !ok {
+				sum.tcpData[k] = v
 				continue
 			}
-			sum.tcp_data[k] += v
+			sum.tcpData[k] += v
 		}
 	}
 
 	result := TCPCountDto{
-		tcp_data: map[string]int32{},
+		tcpData: map[string]int32{},
 	}
 
-	for k, v := range sum.tcp_data {
-		result.tcp_data[k] = v / num
+	for k, v := range sum.tcpData {
+		result.tcpData[k] = v / num
 	}
 
 	return result

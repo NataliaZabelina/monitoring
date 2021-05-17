@@ -5,47 +5,47 @@ import (
 	"time"
 )
 
-type CpuLoadEntity struct {
-	timestamp   int64
-	user_mode   float32
-	system_mode float32
-	idle        float32
+type CPULoadEntity struct {
+	timestamp  int64
+	userMode   float32
+	systemMode float32
+	idle       float32
 }
 
-type CpuLoadDto struct {
-	User_mode   float32
-	System_mode float32
-	Idle        float32
+type CPULoadDto struct {
+	UserMode   float32
+	SystemMode float32
+	Idle       float32
 }
 
-type CpuLoadTable struct {
-	entities []*CpuLoadEntity
+type CPULoadTable struct {
+	entities []*CPULoadEntity
 	mtx      *sync.RWMutex
 }
 
-func (t *CpuLoadTable) Init() *CpuLoadTable {
-	t.entities = []*CpuLoadEntity{}
+func (t *CPULoadTable) Init() *CPULoadTable {
+	t.entities = []*CPULoadEntity{}
 	t.mtx = &sync.RWMutex{}
 	return t
 }
 
-func (t *CpuLoadTable) AddEntity(d CpuLoadDto) {
+func (t *CPULoadTable) AddEntity(d CPULoadDto) {
 	t.mtx.Lock()
 	defer t.mtx.Unlock()
-	e := &CpuLoadEntity{
-		timestamp:   time.Now().Unix(),
-		user_mode:   d.User_mode,
-		system_mode: d.System_mode,
-		idle:        d.Idle,
+	e := &CPULoadEntity{
+		timestamp:  time.Now().Unix(),
+		userMode:   d.UserMode,
+		systemMode: d.SystemMode,
+		idle:       d.Idle,
 	}
 	t.entities = append(t.entities, e)
 }
 
-func (t *CpuLoadTable) GetAverage(period int32) CpuLoadDto {
+func (t *CPULoadTable) GetAverage(period int32) CPULoadDto {
 	t.mtx.RLock()
 	defer t.mtx.RUnlock()
 	currentTime := time.Now().Unix()
-	sum := &CpuLoadDto{}
+	sum := &CPULoadDto{}
 	num := 0
 	for i := len(t.entities) - 1; i >= 0; i-- {
 		if t.entities[i].timestamp < currentTime-int64(period) {
@@ -53,13 +53,13 @@ func (t *CpuLoadTable) GetAverage(period int32) CpuLoadDto {
 		}
 		num++
 		sum.Idle += t.entities[i].idle
-		sum.System_mode += t.entities[i].system_mode
-		sum.User_mode += t.entities[i].user_mode
+		sum.SystemMode += t.entities[i].systemMode
+		sum.UserMode += t.entities[i].userMode
 	}
 
-	return CpuLoadDto{
-		User_mode:   sum.User_mode / float32(num),
-		System_mode: sum.System_mode / float32(num),
-		Idle:        sum.Idle / float32(num),
+	return CPULoadDto{
+		UserMode:   sum.UserMode / float32(num),
+		SystemMode: sum.SystemMode / float32(num),
+		Idle:       sum.Idle / float32(num),
 	}
 }

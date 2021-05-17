@@ -9,7 +9,7 @@ type Protocol string
 
 const (
 	TCP Protocol = "TCP"
-	UDP          = "UDP"
+	UDP Protocol = "UDP"
 )
 
 type SocketLoadEntity struct {
@@ -18,11 +18,11 @@ type SocketLoadEntity struct {
 }
 
 type SocketLoadDto struct {
-	command  string
 	pid      int32
-	user     string
-	protocol Protocol
 	port     int32
+	user     string
+	command  string
+	protocol Protocol
 }
 
 type SocketLoadInfo struct {

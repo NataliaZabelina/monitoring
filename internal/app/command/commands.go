@@ -10,27 +10,27 @@ import (
 	"github.com/NataliaZabelina/monitoring/internal/storage"
 )
 
-func GetLoadAvg(db *storage.Db) (string, error) {
+func GetLoadAvg(db *storage.DB) (string, error) {
 	return runCommand(db, "load_avg")
 }
 
-func GetCpu(db *storage.Db) (string, error) {
+func GetCPU(db *storage.DB) (string, error) {
 	return runCommand(db, "cpu")
 }
 
-func GetDiskIO(db *storage.Db) (string, error) {
+func GetDiskIO(db *storage.DB) (string, error) {
 	return runCommand(db, "disk_io")
 }
 
-func GetDiskFS(db *storage.Db) (string, error) {
+func GetDiskFS(db *storage.DB) (string, error) {
 	return runCommand(db, "disk_fs")
 }
 
-func GetTopTalkers(db *storage.Db) (string, error) {
+func GetTopTalkers(db *storage.DB) (string, error) {
 	return runCommand(db, "top_talkers")
 }
 
-func GetNetStat(db *storage.Db) (string, error) {
+func GetNetStat(db *storage.DB) (string, error) {
 	return runCommand(db, "net_stat")
 }
 
@@ -46,7 +46,7 @@ func execute(name string, arg ...string) (string, error) {
 	return stdout.String(), nil
 }
 
-func runCommand(db *storage.Db, command string) (string, error) {
+func runCommand(db *storage.DB, command string) (string, error) {
 	out, err := execute("/bin/bash", "-c", GetCommand(command))
 	if err != nil {
 		return "", err

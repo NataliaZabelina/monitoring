@@ -2,25 +2,27 @@ package storage
 
 import "github.com/NataliaZabelina/monitoring/internal/storage/schema"
 
-type Db struct {
-	CPU_table    CPUTable
-	System_table SystemTable
-	Disk_table   DiskTable
-	Socket_table SocketTable
-	TCP_table    TCPTable
+type DB struct {
+	CPUTable    CPUTable
+	SystemTable SystemTable
+	DiskTable   DiskTable
+	// DiskFSTable DiskFSTable
+	SocketTable SocketTable
+	TCPTable    TCPTable
 }
 
-func (db *Db) Init() {
-	db.CPU_table = (&schema.CpuLoadTable{}).Init()
-	db.System_table = (&schema.SystemLoadTable{}).Init()
-	db.Disk_table = (&schema.DiskLoadTable{}).Init()
-	db.Socket_table = (&schema.SocketLoadTable{}).Init()
-	db.TCP_table = (&schema.TCPCountTable{}).Init()
+func (db *DB) Init() {
+	db.CPUTable = (&schema.CPULoadTable{}).Init()
+	db.SystemTable = (&schema.SystemLoadTable{}).Init()
+	db.DiskTable = (&schema.DiskTable{}).Init()
+	// db.DiskFSTable = (&schema.DiskFSTable{}).Init()
+	db.SocketTable = (&schema.SocketLoadTable{}).Init()
+	db.TCPTable = (&schema.TCPCountTable{}).Init()
 }
 
 type CPUTable interface {
-	AddEntity(schema.CpuLoadDto)
-	GetAverage(period int32) schema.CpuLoadDto
+	AddEntity(schema.CPULoadDto)
+	GetAverage(period int32) schema.CPULoadDto
 }
 
 type SystemTable interface {
@@ -29,9 +31,14 @@ type SystemTable interface {
 }
 
 type DiskTable interface {
-	AddEntity(schema.DiskLoadDto)
-	GetAverage(period int32) schema.DiskLoadDto
+	AddEntity(schema.DiskDto)
+	GetAverage(period int32) schema.DiskDto
 }
+
+// type DiskFSTable interface {
+// 	AddEntity(schema.DiskFSDto)
+// 	GetAverage(period int32) schema.DiskFSDto
+// }
 
 type SocketTable interface {
 	AddEntity(schema.SocketLoadInfo)

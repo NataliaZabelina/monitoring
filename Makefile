@@ -7,6 +7,9 @@ LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%d
 build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd/monitoring
 
+build_ci:
+	@env GOOS=linux GOARCH=amd64 go build -a -v -o $(BIN) -installsuffix cgo ./cmd/monitoring
+
 run: build
 	$(BIN) -config ./configs/config.json
 
@@ -14,7 +17,7 @@ build-img:
 	docker build \
 		--build-arg=LDFLAGS="$(LDFLAGS)" \
 		-t $(DOCKER_IMG) \
-		-f build/Dockerfile .
+		-f deployments/docker/Dockerfile .
 
 run-img: build-img
 	docker run $(DOCKER_IMG)
@@ -30,5 +33,8 @@ install-lint-deps:
 
 lint: install-lint-deps
 	golangci-lint run ./...
+
+lint_ci:
+	golangci-lint run --config=./.golangci.yml
 
 .PHONY: build run build-img run-img version test lint

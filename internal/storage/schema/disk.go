@@ -5,57 +5,47 @@ import (
 	"time"
 )
 
-type DiskIO struct {
-	tps float32
-	kbs float32
-	cpu float32
+type Disk struct {
+	Param1 float32
+	Param2 float32
 }
 
-type DiskFS struct {
-	mused float32
-	iused float32
-}
-
-type DiskLoadEntity struct {
+type DiskEntity struct {
 	timestamp int64
-	disk_io   map[string]DiskIO
-	disk_fs   map[string]DiskFS
+	Disk      map[string]Disk
 }
 
-type DiskLoadDto struct {
-	disk_io map[string]DiskIO
-	disk_fs map[string]DiskFS
+type DiskDto struct {
+	Disk map[string]Disk
 }
 
-type DiskLoadTable struct {
-	entities []*DiskLoadEntity
+type DiskTable struct {
+	entities []*DiskEntity
 	mtx      *sync.RWMutex
 }
 
-func (t *DiskLoadTable) Init() *DiskLoadTable {
-	t.entities = []*DiskLoadEntity{}
+func (t *DiskTable) Init() *DiskTable {
+	t.entities = []*DiskEntity{}
 	t.mtx = &sync.RWMutex{}
 	return t
 }
 
-func (t *DiskLoadTable) AddEntity(d DiskLoadDto) {
+func (t *DiskTable) AddEntity(d DiskDto) {
 	t.mtx.Lock()
 	defer t.mtx.Unlock()
-	e := &DiskLoadEntity{
+	e := &DiskEntity{
 		timestamp: time.Now().Unix(),
-		disk_io:   d.disk_io,
-		disk_fs:   d.disk_fs,
+		Disk:      d.Disk,
 	}
 	t.entities = append(t.entities, e)
 }
 
-func (t *DiskLoadTable) GetAverage(period int32) DiskLoadDto {
+func (t *DiskTable) GetAverage(period int32) DiskDto {
 	t.mtx.RLock()
 	defer t.mtx.RUnlock()
 	currentTime := time.Now().Unix()
-	sum := &DiskLoadDto{
-		disk_io: map[string]DiskIO{},
-		disk_fs: map[string]DiskFS{},
+	sum := &DiskDto{
+		Disk: map[string]Disk{},
 	}
 	num := 0
 	for i := len(t.entities) - 1; i >= 0; i-- {
@@ -63,47 +53,26 @@ func (t *DiskLoadTable) GetAverage(period int32) DiskLoadDto {
 			break
 		}
 		num++
-		for k, v := range t.entities[i].disk_fs {
-			if _, ok := sum.disk_fs[k]; !ok {
-				sum.disk_fs[k] = v
+		for k, v := range t.entities[i].Disk {
+			if _, ok := sum.Disk[k]; !ok {
+				sum.Disk[k] = v
 				continue
 			}
-			sum.disk_fs[k] = DiskFS{
-				mused: sum.disk_fs[k].mused + v.mused,
-				iused: sum.disk_fs[k].iused + v.iused,
-			}
-		}
-
-		for k, v := range t.entities[i].disk_io {
-			if _, ok := sum.disk_io[k]; !ok {
-				sum.disk_io[k] = v
-				continue
-			}
-			sum.disk_io[k] = DiskIO{
-				tps: sum.disk_io[k].tps + v.tps,
-				kbs: sum.disk_io[k].kbs + v.kbs,
-				cpu: sum.disk_io[k].cpu + v.cpu,
+			sum.Disk[k] = Disk{
+				Param2: sum.Disk[k].Param2 + v.Param2,
+				Param1: sum.Disk[k].Param1 + v.Param1,
 			}
 		}
 	}
 
-	result := DiskLoadDto{
-		disk_io: map[string]DiskIO{},
-		disk_fs: map[string]DiskFS{},
+	result := DiskDto{
+		Disk: map[string]Disk{},
 	}
 
-	for k, v := range sum.disk_fs {
-		result.disk_fs[k] = DiskFS{
-			mused: v.mused/float32(num),
-			iused: v.iused/float32(num),
-		}
-	}
-
-	for k, v := range sum.disk_io {
-		result.disk_io[k] = DiskIO{
-			tps: v.tps/float32(num),
-			kbs: v.kbs/float32(num),
-			cpu: v.cpu/float32(num),
+	for k, v := range sum.Disk {
+		result.Disk[k] = Disk{
+			Param2: v.Param2 / float32(num),
+			Param1: v.Param1 / float32(num),
 		}
 	}
 

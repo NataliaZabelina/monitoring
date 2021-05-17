@@ -12,6 +12,7 @@ import (
 	"github.com/NataliaZabelina/monitoring/api"
 	monitoring "github.com/NataliaZabelina/monitoring/internal/app"
 	"github.com/NataliaZabelina/monitoring/internal/logger"
+	"github.com/NataliaZabelina/monitoring/internal/storage"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -20,13 +21,13 @@ import (
 var grpcServer *grpc.Server
 
 type GrpcServer struct {
-	monitoring *monitoring.Monitoring
-	logger     *zap.SugaredLogger
 	api.UnimplementedMonitoringServer
+	logger     *zap.SugaredLogger
+	monitoring *monitoring.Monitoring
+	db         *storage.DB
 }
 
-func Start(monitoring *monitoring.Monitoring, log *zap.SugaredLogger) error {
-
+func Start(db *storage.DB, monitoring *monitoring.Monitoring, log *zap.SugaredLogger) error {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -53,6 +54,7 @@ func Start(monitoring *monitoring.Monitoring, log *zap.SugaredLogger) error {
 		srv := &GrpcServer{
 			monitoring: monitoring,
 			logger:     log,
+			db:         db,
 		}
 
 		address := "localhost:50051"
@@ -100,9 +102,18 @@ func (s *GrpcServer) GetInfo(req *api.Request, stream api.Monitoring_GetInfoServ
 		select {
 		case <-time.After(d):
 			data := api.Result{}
+			timestamp := timestamppb.Now()
 			data.SystemValue = &api.SystemResponse{
-				ResponseTime:     timestamppb.Now(),
-				LoadAverageValue: 67.8}
+				ResponseTime:     timestamp,
+				LoadAverageValue: float64((s.db.SystemTable.GetAverage(req.Period)).LoadAvg),
+			}
+			cpu := s.db.CPUTable.GetAverage(req.Period)
+			data.CpuValue = &api.CPUResponse{
+				ResponseTime: timestamp,
+				UserMode:     float64(cpu.UserMode),
+				SystemMode:   float64(cpu.SystemMode),
+				Idle:         float64(cpu.Idle),
+			}
 			err := stream.Send(&data)
 			if err != nil {
 				return err

@@ -1,3 +1,18 @@
 {
-    
+    "host": "localhost",
+    "port": 50051,
+    "log": {
+        "level": "debug",
+        "file": "stdout"
+    },
+    "collector": {
+        "timeout": 1,
+        "statistics": {
+            "load_system": true,
+            "load_cpu": true,
+            "load_disk": true,
+            "top_talkers": false,
+            "stat_network": false
+        }
+    }
 }

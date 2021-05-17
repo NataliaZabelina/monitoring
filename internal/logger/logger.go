@@ -1,15 +1,17 @@
 package logger
 
 import (
+	"log"
+	"os"
 	"strings"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-type LoggerParams struct {
-	Level   string
-	LogFile string
+type Params struct {
+	Level   string `json:"level" mapstructure:"level"`
+	LogFile string `json:"file" mapstructure:"file"`
 }
 
 var Logger *zap.SugaredLogger
@@ -18,8 +20,7 @@ func init() {
 	Logger = zap.NewExample().Sugar()
 }
 
-func Init() (*zap.SugaredLogger, error) {
-	var l LoggerParams
+func Init(l Params) (*zap.SugaredLogger, error) {
 	var level zap.AtomicLevel
 	switch strings.ToLower(l.Level) {
 	case "warn":
@@ -34,15 +35,24 @@ func Init() (*zap.SugaredLogger, error) {
 		level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
 	}
 
-	stdout := []string{"stdout"}
+	outputPath := []string{"stdout"}
+	errorOutputPath := []string{"stderr"}
+
 	if l.LogFile != "" {
-		stdout = append(stdout, l.LogFile)
+		_, err := os.Create(l.LogFile)
+		if err != nil {
+			log.Printf("Can't create config file %s %v", l.LogFile, err)
+		} else {
+			outputPath = append(outputPath, l.LogFile)
+			errorOutputPath = append(errorOutputPath, l.LogFile)
+		}
 	}
 
 	cfg := zap.Config{
-		Level:       level,
-		Encoding:    "console",
-		OutputPaths: stdout,
+		Level:            level,
+		Encoding:         "json",
+		OutputPaths:      outputPath,
+		ErrorOutputPaths: errorOutputPath,
 		EncoderConfig: zapcore.EncoderConfig{
 			MessageKey:  "message",
 			LevelKey:    "level",

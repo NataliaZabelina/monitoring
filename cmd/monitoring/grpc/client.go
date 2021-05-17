@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"errors"
 	"io"
 	"time"
 
@@ -17,7 +18,7 @@ var (
 	timeout int32
 	period  int32
 
-	load_avg  bool
+	loadAvg   bool
 	cpu       bool
 	disk      bool
 	toptalker bool
@@ -36,9 +37,9 @@ var (
 
 func init() {
 	GrpcClientCmd.Flags().StringVarP(&address, "address", "", "localhost:50051", "host:port to establish connection")
-	GrpcClientCmd.Flags().Int32VarP(&timeout, "time", "", 5, "time parameter in sec to define how often to collect statistics")
+	GrpcClientCmd.Flags().Int32VarP(&timeout, "timeout", "", 5, "time parameter in sec to define how often to collect statistics")
 	GrpcClientCmd.Flags().Int32VarP(&period, "period", "", 15, "time period in sec for collecting statistics")
-	GrpcClientCmd.Flags().BoolVarP(&load_avg, "load", "s", false, "collect system load averge statistics")
+	GrpcClientCmd.Flags().BoolVarP(&loadAvg, "load", "s", false, "collect system load averge statistics")
 	GrpcClientCmd.Flags().BoolVarP(&cpu, "cpu", "c", false, "collect CPU statistics")
 	GrpcClientCmd.Flags().BoolVarP(&disk, "disk", "d", false, "collect Disk statistics")
 	GrpcClientCmd.Flags().BoolVarP(&toptalker, "toptalk", "t", false, "collect top talkers statistics")
@@ -55,8 +56,7 @@ func init() {
 }
 
 func startGrpcClient(cmd *cobra.Command, args []string) {
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	conn, err := grpc.DialContext(ctx, address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -67,11 +67,11 @@ func startGrpcClient(cmd *cobra.Command, args []string) {
 	l.Logger.Infof("Connection established")
 	client := api.NewMonitoringClient(conn)
 
-	if !load_avg && !cpu && !disk && !toptalker && !netstat {
-		load_avg = true
+	if !loadAvg && !cpu && !disk && !toptalker && !netstat {
+		loadAvg = true
 		cpu = true
 		disk = true
-		load_avg = true
+		loadAvg = true
 		netstat = true
 	}
 
@@ -90,7 +90,7 @@ func collectStatistics(client api.MonitoringClient, timeout int32, period int32)
 
 	for {
 		msg, err := stream.Recv()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			l.Logger.Info("IO EOF: %w", err)
 			return
 		}
