@@ -43,7 +43,7 @@ func (t *TCPCountTable) GetAverage(period int32) TCPCountDto {
 		tcp_data: map[string]int32{},
 	}
 	num := int32(0)
-	for i := len(t.entities) - 1; i < 0; i-- {
+	for i := len(t.entities) - 1; i >= 0; i-- {
 		if t.entities[i].timestamp < currentTime-int64(period) {
 			break
 		}

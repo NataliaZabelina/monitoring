@@ -55,7 +55,7 @@ func (t *SocketLoadTable) GetAverage(period int32) SocketLoadInfo {
 	defer t.mtx.RUnlock()
 	currentTime := time.Now().Unix()
 	res := map[SocketLoadDto]bool{}
-	for i := len(t.entities) - 1; i < 0; i-- {
+	for i := len(t.entities) - 1; i >= 0; i-- {
 		if t.entities[i].timestamp < currentTime-int64(period) {
 			break
 		}

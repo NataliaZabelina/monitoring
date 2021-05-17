@@ -22,7 +22,7 @@ func TestGetCpu(t *testing.T) {
 	result, err := GetCpu(db)
 	require.Nil(t, err)
 	require.NotEmpty(t, result)
-	require.NotEmpty(t, db.CPU_table.GetAverage(5).User_mode)
-	require.NotEmpty(t, db.CPU_table.GetAverage(5).System_mode)
-	require.NotEmpty(t, db.CPU_table.GetAverage(5).Idle)
+	require.GreaterOrEqual(t, float64(db.CPU_table.GetAverage(5).User_mode), 0.0)
+	require.GreaterOrEqual(t, float64(db.CPU_table.GetAverage(5).System_mode), 0.0)
+	require.GreaterOrEqual(t, float64(db.CPU_table.GetAverage(5).Idle), 0.0)
 }

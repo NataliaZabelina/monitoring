@@ -47,7 +47,7 @@ func (t *CpuLoadTable) GetAverage(period int32) CpuLoadDto {
 	currentTime := time.Now().Unix()
 	sum := &CpuLoadDto{}
 	num := 0
-	for i := len(t.entities) - 1; i < 0; i-- {
+	for i := len(t.entities) - 1; i >= 0; i-- {
 		if t.entities[i].timestamp < currentTime-int64(period) {
 			break
 		}

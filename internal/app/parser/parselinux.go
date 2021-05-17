@@ -72,10 +72,3 @@ func TrimLeftAndGetFLoat(str string, trimmer string) (float32, error) {
 	val, err := strconv.ParseFloat(str_val, 32)
 	return float32(val), err
 }
-
-func TrimRightAndGetFLoat(str string, trimmer string) (float32, error) {
-	last_index := strings.LastIndex(str, trimmer)
-	str_val := strings.TrimRight(str[last_index+1:], " ")
-	val, err := strconv.ParseFloat(str_val, 32)
-	return float32(val), err
-}
