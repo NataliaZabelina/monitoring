@@ -13,9 +13,9 @@ type CpuLoadEntity struct {
 }
 
 type CpuLoadDto struct {
-	user_mode   float32
-	system_mode float32
-	idle        float32
+	User_mode   float32
+	System_mode float32
+	Idle        float32
 }
 
 type CpuLoadTable struct {
@@ -34,9 +34,9 @@ func (t *CpuLoadTable) AddEntity(d CpuLoadDto) {
 	defer t.mtx.Unlock()
 	e := &CpuLoadEntity{
 		timestamp:   time.Now().Unix(),
-		user_mode:   d.user_mode,
-		system_mode: d.system_mode,
-		idle:        d.idle,
+		user_mode:   d.User_mode,
+		system_mode: d.System_mode,
+		idle:        d.Idle,
 	}
 	t.entities = append(t.entities, e)
 }
@@ -52,14 +52,14 @@ func (t *CpuLoadTable) GetAverage(period int32) CpuLoadDto {
 			break
 		}
 		num++
-		sum.idle += t.entities[i].idle
-		sum.system_mode += t.entities[i].system_mode
-		sum.user_mode += t.entities[i].user_mode
+		sum.Idle += t.entities[i].idle
+		sum.System_mode += t.entities[i].system_mode
+		sum.User_mode += t.entities[i].user_mode
 	}
 
 	return CpuLoadDto{
-		user_mode:   sum.user_mode / float32(num),
-		system_mode: sum.system_mode / float32(num),
-		idle:        sum.idle / float32(num),
+		User_mode:   sum.User_mode / float32(num),
+		System_mode: sum.System_mode / float32(num),
+		Idle:        sum.Idle / float32(num),
 	}
 }

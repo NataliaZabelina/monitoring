@@ -18,7 +18,7 @@ func init() {
 	Logger = zap.NewExample().Sugar()
 }
 
-func Init() (*zap.Logger, error) {
+func Init() (*zap.SugaredLogger, error) {
 	var l LoggerParams
 	var level zap.AtomicLevel
 	switch strings.ToLower(l.Level) {
@@ -57,5 +57,5 @@ func Init() (*zap.Logger, error) {
 
 	_ = Logger.Sync()
 
-	return Logger, nil
+	return Logger.Sugar(), nil
 }

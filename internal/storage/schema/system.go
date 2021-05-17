@@ -11,7 +11,7 @@ type SystemLoadEntity struct {
 }
 
 type SystemLoadDto struct {
-	load_avg float32
+	Load_avg float32
 }
 
 type SystemLoadTable struct {
@@ -30,7 +30,7 @@ func (t *SystemLoadTable) AddEntity(d SystemLoadDto) {
 	defer t.mtx.Unlock()
 	e := &SystemLoadEntity{
 		timestamp: time.Now().Unix(),
-		load_avg:  d.load_avg,
+		load_avg:  d.Load_avg,
 	}
 	t.entities = append(t.entities, e)
 }
@@ -41,15 +41,15 @@ func (t *SystemLoadTable) GetAverage(period int32) SystemLoadDto {
 	currentTime := time.Now().Unix()
 	sum := &SystemLoadDto{}
 	num := 0
-	for i := len(t.entities) - 1; i < 0; i-- {
+	for i := len(t.entities) - 1; i >= 0; i-- {
 		if t.entities[i].timestamp < currentTime-int64(period) {
 			break
 		}
 		num++
-		sum.load_avg += t.entities[i].load_avg
+		sum.Load_avg += t.entities[i].load_avg
 	}
 
 	return SystemLoadDto{
-		load_avg: sum.load_avg / float32(num),
+		Load_avg: sum.Load_avg / float32(num),
 	}
 }

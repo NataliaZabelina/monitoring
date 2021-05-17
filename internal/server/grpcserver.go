@@ -21,11 +21,11 @@ var grpcServer *grpc.Server
 
 type GrpcServer struct {
 	monitoring *monitoring.Monitoring
-	logger     *zap.Logger
+	logger     *zap.SugaredLogger
 	api.UnimplementedMonitoringServer
 }
 
-func Start(monitoring *monitoring.Monitoring, log *zap.Logger) error {
+func Start(monitoring *monitoring.Monitoring, log *zap.SugaredLogger) error {
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
@@ -66,7 +66,7 @@ func Start(monitoring *monitoring.Monitoring, log *zap.Logger) error {
 		api.RegisterMonitoringServer(grpcServer, srv)
 
 		if err := grpcServer.Serve(listener); err != nil {
-			logger.Logger.Fatalf("Can not accept incoming connection: %v", err)
+			logger.Logger.Fatalf("Can not accept incoming connection: %w", err)
 			return
 		}
 	}()

@@ -5,31 +5,33 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/NataliaZabelina/monitoring/internal/app/parser"
 	l "github.com/NataliaZabelina/monitoring/internal/logger"
+	"github.com/NataliaZabelina/monitoring/internal/storage"
 )
 
-func GetLoadAvg() string {
-	return runCommand("load_avg")
+func GetLoadAvg(db *storage.Db) (string, error) {
+	return runCommand(db, "load_avg")
 }
 
-func GetCpu() string {
-	return runCommand("cpu")
+func GetCpu(db *storage.Db) (string, error) {
+	return runCommand(db, "cpu")
 }
 
-func GetDiskIO() string {
-	return runCommand("disk_io")
+func GetDiskIO(db *storage.Db) (string, error) {
+	return runCommand(db, "disk_io")
 }
 
-func GetDiskFS() string {
-	return runCommand("disk_fs")
+func GetDiskFS(db *storage.Db) (string, error) {
+	return runCommand(db, "disk_fs")
 }
 
-func GetTopTalkers() string {
-	return runCommand("top_talkers")
+func GetTopTalkers(db *storage.Db) (string, error) {
+	return runCommand(db, "top_talkers")
 }
 
-func GetNetStat() string {
-	return runCommand("net_stat")
+func GetNetStat(db *storage.Db) (string, error) {
+	return runCommand(db, "net_stat")
 }
 
 func execute(name string, arg ...string) (string, error) {
@@ -44,11 +46,15 @@ func execute(name string, arg ...string) (string, error) {
 	return stdout.String(), nil
 }
 
-func runCommand(command string) string {
+func runCommand(db *storage.Db, command string) (string, error) {
 	out, err := execute("/bin/bash", "-c", GetCommand(command))
 	if err != nil {
-		return ""
+		return "", err
 	}
 	result := strings.Trim(out, " ")
-	return result
+	err = parser.GetParser(command)(db, result)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }

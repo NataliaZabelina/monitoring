@@ -10,7 +10,7 @@ type Db struct {
 	TCP_table    TCPTable
 }
 
-func (db *Db) init() {
+func (db *Db) Init() {
 	db.CPU_table = (&schema.CpuLoadTable{}).Init()
 	db.System_table = (&schema.SystemLoadTable{}).Init()
 	db.Disk_table = (&schema.DiskLoadTable{}).Init()

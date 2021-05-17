@@ -12,7 +12,7 @@ func GetCommand(command string) string {
 		return getCPUCommand()
 	case "disk_io":
 		return getDiskIOCommand()
-	default: 
+	default:
 		return getLoadAvgCommand()
 	}
 }
@@ -33,23 +33,23 @@ func getDiskIOCommand() string {
 	cmdDarwin := "iostat -dC"
 	cmdLinux := "iostat -d -k"
 	return chooseCmd(cmdDarwin, cmdLinux)
-} 
+}
 
 func getDiskFSCommand() string {
 	cmdDarwin := "df -m"
 	cmdLinux := "df -i"
 	return chooseCmd(cmdDarwin, cmdLinux)
-} 
+}
 
 func getTopTalkersCommand() string {
-	cmdDarwin := ""  //???
-	cmdLinux := "ss -ta"  //???
+	cmdDarwin := ""      //todo
+	cmdLinux := "ss -ta" //todo
 	return chooseCmd(cmdDarwin, cmdLinux)
 }
 
 func getNetStatCommand() string {
-	cmdDarwin := ""  //???
-	cmdLinux := "sudo netstat -lntup" //???
+	cmdDarwin := ""                   // todo
+	cmdLinux := "sudo netstat -lntup" //todo
 	return chooseCmd(cmdDarwin, cmdLinux)
 }
 

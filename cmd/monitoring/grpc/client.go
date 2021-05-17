@@ -91,11 +91,11 @@ func collectStatistics(client api.MonitoringClient, timeout int32, period int32)
 	for {
 		msg, err := stream.Recv()
 		if err == io.EOF {
-			l.Logger.Info("IO EOF: %v", err)
+			l.Logger.Info("IO EOF: %w", err)
 			return
 		}
 		if err != nil {
-			l.Logger.Fatalf("Can't read from stream: %v", err)
+			l.Logger.Fatalf("Can't read from stream: %w", err)
 		}
 
 		l.Logger.Info("Collected System Information")
