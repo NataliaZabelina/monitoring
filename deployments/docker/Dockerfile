@@ -13,4 +13,4 @@ RUN apt-get update \
 
 EXPOSE 50051
 ENTRYPOINT ["./bin/monitoring"]
-CMD ["grpc_server", "-c", "./configs/config.jso"]
+CMD ["grpc_server", "-c", "./configs/config.json"]

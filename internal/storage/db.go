@@ -7,8 +7,8 @@ type DB struct {
 	SystemTable SystemTable
 	DiskTable   DiskTable
 	// DiskFSTable DiskFSTable
-	SocketTable SocketTable
-	TCPTable    TCPTable
+	// SocketTable SocketTable
+	// TCPTable    TCPTable
 }
 
 func (db *DB) Init() {
@@ -16,8 +16,8 @@ func (db *DB) Init() {
 	db.SystemTable = (&schema.SystemLoadTable{}).Init()
 	db.DiskTable = (&schema.DiskTable{}).Init()
 	// db.DiskFSTable = (&schema.DiskFSTable{}).Init()
-	db.SocketTable = (&schema.SocketLoadTable{}).Init()
-	db.TCPTable = (&schema.TCPCountTable{}).Init()
+	// db.SocketTable = (&schema.SocketLoadTable{}).Init()
+	// db.TCPTable = (&schema.TCPCountTable{}).Init()
 }
 
 type CPUTable interface {
@@ -40,10 +40,10 @@ type DiskTable interface {
 // 	GetAverage(period int32) schema.DiskFSDto
 // }
 
-type SocketTable interface {
-	AddEntity(schema.SocketLoadInfo)
-	GetAverage(period int32) schema.SocketLoadInfo
-}
+// type SocketTable interface {
+// 	AddEntity(schema.SocketLoadInfo)
+// 	GetAverage(period int32) schema.SocketLoadInfo
+// }
 
 type TCPTable interface {
 	AddEntity(schema.TCPCountDto)

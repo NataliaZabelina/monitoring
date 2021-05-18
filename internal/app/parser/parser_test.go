@@ -19,22 +19,10 @@ var (
 
 	expectedIostat = schema.DiskDto{
 		Disk: map[string]schema.Disk{
-			"loop0": schema.Disk{
-				Param1: 0.06,
-				Param2: 0.08,
-			},
-			"loop1": schema.Disk{
-				Param1: 0.0,
-				Param2: 0.04,
-			},
-			"loop2": schema.Disk{
-				Param1: 0.00,
-				Param2: 0.05,
-			},
-			"sda": schema.Disk{
-				Param1: 36.58,
-				Param2: 701.88,
-			},
+			"loop0": {Param1: 0.06, Param2: 0.08},
+			"loop1": {Param1: 0.0, Param2: 0.04},
+			"loop2": {Param1: 0.00, Param2: 0.05},
+			"sda":   {Param1: 36.58, Param2: 701.88},
 		},
 	}
 )

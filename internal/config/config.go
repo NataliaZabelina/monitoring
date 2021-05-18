@@ -28,7 +28,6 @@ type Statistics struct {
 }
 
 func LoadConfig(filePath string) (*Config, error) {
-
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetDefault("log.level", "debug")
