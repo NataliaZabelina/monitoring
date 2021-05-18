@@ -6,7 +6,7 @@ stages:
 
 lint:
   stage: lint
-  image: golang:alpine
+  image: golang:buster
   script:
     - make lint_ci
   tags:
@@ -14,7 +14,7 @@ lint:
 
 test:
   stage: test
-  image: golang:alpine
+  image: golang:buster
   script:
     - make test
   tags:
@@ -22,7 +22,7 @@ test:
 
 build:
   stage: build
-  image: golang:alpine
+  image: golang:buster
   script:
     - make build_ci
   tags:
