@@ -4,10 +4,23 @@
 
 ## Запуск
 
+Сервер:
+ 
+ - make run_server
+ - make run_client
+
  - ./monitoring grpc_server --config=configs/config.json
  - ./monitoring grpc_client --server=":50051" --timeout=5 --period=15
 
- ## Пример конфигурации
+ Подробнее: 
+ - ./monitoring --help
+ - ./monitoring grpc_client --help
+ - ./monitoring grpc_server --help
+
+ Для запуска сервера в контейне:
+ - make run_img
+
+ ## Пример конфигурации ceрвера
 
  ```
  {
@@ -15,7 +28,7 @@
     "port": 50053,
     "log": {
         "level": "debug",
-        "file": "./mon.log"
+        "file": "./m.log"
     },
     "collector": {
         "timeout": 1,
@@ -23,10 +36,9 @@
             "load_system": true,
             "load_cpu": true,
             "load_disk": true,
-            "top_talkers": true,
+            "top_talkers": false,
             "stat_network": false
         }
     }
 }
 ```
-

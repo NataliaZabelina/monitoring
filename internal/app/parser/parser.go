@@ -16,8 +16,6 @@ func GetParser(command string) func(*storage.DB, string) error {
 		return getCPUParser()
 	case "disk_io":
 		return getDiskIOParser()
-	case "disk_fs":
-		return getDiskFSParser()
 	default:
 		return getLoadAvgParser()
 	}
@@ -38,12 +36,6 @@ func getCPUParser() func(*storage.DB, string) error {
 func getDiskIOParser() func(*storage.DB, string) error {
 	parserDarwin := ParseDiskIODarwin
 	parserLinux := ParseDiskIOLinux
-	return chooseParser(parserDarwin, parserLinux)
-}
-
-func getDiskFSParser() func(*storage.DB, string) error {
-	parserDarwin := ParseDiskFSDarwin
-	parserLinux := ParseDiskFSLinux
 	return chooseParser(parserDarwin, parserLinux)
 }
 

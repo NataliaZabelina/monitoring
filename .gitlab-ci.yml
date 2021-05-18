@@ -26,7 +26,7 @@ build:
   stage: build
   image: golang:buster
   script:
-    - make build_ci
+    - make build_linux
   tags:
     - docker
   artifacts:

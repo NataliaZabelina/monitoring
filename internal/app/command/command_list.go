@@ -35,24 +35,6 @@ func getDiskIOCommand() string {
 	return chooseCmd(cmdDarwin, cmdLinux)
 }
 
-// func getDiskFSCommand() string {
-// 	cmdDarwin := "df -m"
-// 	cmdLinux := "df -k; df -i"
-// 	return chooseCmd(cmdDarwin, cmdLinux)
-// }
-
-// func getTopTalkersCommand() string {
-// 	cmdDarwin := ""      // todo
-// 	cmdLinux := "ss -ta" // todo
-// 	return chooseCmd(cmdDarwin, cmdLinux)
-// }
-
-// func getNetStatCommand() string {
-// 	cmdDarwin := ""                   // todo
-// 	cmdLinux := "sudo netstat -lntup" // todo
-// 	return chooseCmd(cmdDarwin, cmdLinux)
-// }
-
 func chooseCmd(cmdDarwin string, cmdLinux string) string {
 	switch os {
 	case "darwin":

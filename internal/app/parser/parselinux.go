@@ -105,42 +105,6 @@ func ParseDiskIOLinux(db *storage.DB, txt string) error {
 	return nil
 }
 
-func ParseDiskFSLinux(db *storage.DB, txt string) error {
-	// scanner := bufio.NewScanner(strings.NewReader(txt))
-
-	// for scanner.Scan() {
-	// 	if !strings.HasPrefix(scanner.Text(), "Filesystem") {
-	// 		continue
-	// 	}
-
-	// 	for scanner.Scan() {
-	// 		s := strings.ReplaceAll(scanner.Text(), ",", ".")
-	// 		data := strings.Fields(s)
-	// 		if len(data) < 6 {
-	// 			continue
-	// 		}
-	// 		used := strings.TrimLeft(data[4], "%")
-	// 		usedProc, err := strconv.Atoi(used)
-	// 		if err != nil {
-	// 			return err
-	// 		}
-	// 		diskFS := schema.Disk{
-	// 			Param1: float32(usedProc),
-	// 			Param2: float32(),
-	// 		}
-
-	// 		result := map[string]schema.Disk{}
-	// 		result[data[0]] = diskFS
-
-	// 		db.DiskTable.AddEntity(schema.DiskDto{
-	// 			Disk: result,
-	// 		})
-	// 	}
-	// }
-
-	return nil
-}
-
 func splitInput(str string, trimmer string) []string {
 	lastIndex := strings.LastIndex(str, trimmer) + len(trimmer) - 1
 	str = strings.TrimLeft(str[lastIndex+1:], " ")

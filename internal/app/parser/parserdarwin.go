@@ -57,7 +57,3 @@ func ParseCPULoadDarwin(db *storage.DB, txt string) error {
 func ParseDiskIODarwin(db *storage.DB, txt string) error {
 	return nil
 }
-
-func ParseDiskFSDarwin(db *storage.DB, txt string) error {
-	return nil
-}
