@@ -4,7 +4,7 @@
 
 ## Запуск
 
- - ./monitoring grpc_server --config=configs/prod.yaml --port=50051
+ - ./monitoring grpc_server --config=configs/prod.json --port=50051
  - ./monitoring grpc_client --server=":50051" --timeout=5 --period=15
 
  ## Пример конфигурации
