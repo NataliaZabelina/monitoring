@@ -26,8 +26,9 @@ func TestExecuteCPU(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
+		c := testCase.command
 		t.Run(testCase.name, func(t *testing.T) {
-			cmd := GetCommand(testCase.command)
+			cmd := GetCommand(c)
 			out, err := execute("/bin/bash", "-c", cmd)
 			require.Nil(t, err)
 			require.NotNil(t, out)

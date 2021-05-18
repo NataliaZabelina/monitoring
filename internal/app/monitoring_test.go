@@ -3,8 +3,8 @@ package monitoring
 import (
 	"testing"
 
-	"github.com/NataliaZabelina/monitoring/internal/storage"
 	"github.com/NataliaZabelina/monitoring/internal/app/command"
+	"github.com/NataliaZabelina/monitoring/internal/storage"
 	"github.com/stretchr/testify/require"
 )
 

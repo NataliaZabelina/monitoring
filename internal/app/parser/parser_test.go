@@ -43,7 +43,6 @@ func TestDiskIOParserLinux(t *testing.T) {
 	require.InDelta(t, expectedIostat.Disk["sda"].Param2, current.Disk["sda"].Param2, 0.00001)
 }
 
-
 var (
 	outputTop = `top - 02:17:38 up 18 days,  1:54,  0 users,  load average: 0.23, 0.17, 0.12
 	Tasks:   2 total,   1 running,   1 sleeping,   0 stopped,   0 zombie
@@ -55,16 +54,15 @@ var (
           1 root      20   0    3992   2784   2336 S   0.0   0.1   0:00.12 bash
      7537 root      20   0    7864   2996   2636 R   0.0   0.1   0:00.00 top`
 
-	 expectedCPU = schema.CPULoadDto{
-	 	UserMode:   0.0,
-	 	SystemMode: 1.1,
-	 	Idle:       98.9,
-	 }
+	expectedCPU = schema.CPULoadDto{
+		UserMode:   0.0,
+		SystemMode: 1.1,
+		Idle:       98.9,
+	}
 
-	 expectedLoadAvg = schema.SystemLoadDto{
-	 	LoadAvg: 0.23,
-	 }
-	
+	expectedLoadAvg = schema.SystemLoadDto{
+		LoadAvg: 0.23,
+	}
 )
 
 func TestLoadAvgParserLinux(t *testing.T) {
