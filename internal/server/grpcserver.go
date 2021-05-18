@@ -11,6 +11,7 @@ import (
 
 	"github.com/NataliaZabelina/monitoring/api"
 	monitoring "github.com/NataliaZabelina/monitoring/internal/app"
+	"github.com/NataliaZabelina/monitoring/internal/config"
 	"github.com/NataliaZabelina/monitoring/internal/logger"
 	"github.com/NataliaZabelina/monitoring/internal/storage"
 	"go.uber.org/zap"
@@ -25,9 +26,10 @@ type GrpcServer struct {
 	logger     *zap.SugaredLogger
 	monitoring *monitoring.Monitoring
 	db         *storage.DB
+	cfg        *config.Config
 }
 
-func Start(db *storage.DB, monitoring *monitoring.Monitoring, log *zap.SugaredLogger) error {
+func Start(db *storage.DB, monitoring *monitoring.Monitoring, log *zap.SugaredLogger, cfg *config.Config) error {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -55,9 +57,10 @@ func Start(db *storage.DB, monitoring *monitoring.Monitoring, log *zap.SugaredLo
 			monitoring: monitoring,
 			logger:     log,
 			db:         db,
+			cfg:        cfg,
 		}
 
-		address := "localhost:50051"
+		address := cfg.Host + ":" + cfg.Port
 		listener, err := net.Listen("tcp", address)
 		if err != nil {
 			log.Fatal("Can not start listening")
@@ -68,7 +71,7 @@ func Start(db *storage.DB, monitoring *monitoring.Monitoring, log *zap.SugaredLo
 		api.RegisterMonitoringServer(grpcServer, srv)
 
 		if err := grpcServer.Serve(listener); err != nil {
-			logger.Logger.Fatalf("Can not accept incoming connection: %w", err)
+			log.Fatalf("Can not accept incoming connection: %w", err)
 			return
 		}
 	}()
@@ -80,7 +83,7 @@ func Start(db *storage.DB, monitoring *monitoring.Monitoring, log *zap.SugaredLo
 		break
 	}
 
-	logger.Logger.Info("Shutdown signal accepted")
+	log.Info("Shutdown signal accepted")
 	cancel()
 	if grpcServer != nil {
 		grpcServer.GracefulStop()

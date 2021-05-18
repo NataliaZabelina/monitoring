@@ -18,18 +18,12 @@ var (
 		Example: "monitoring grpc_server --config=configs/config.json",
 	}
 
-	port        string
 	cfgFilePath string
 )
 
 func init() {
 	ServerCmd.Flags().StringVarP(&cfgFilePath, "config", "c", "", "path to configuration file")
 	err := viper.BindPFlag("config", ServerCmd.Flags().Lookup("config"))
-	if err != nil {
-		l.Logger.Fatalf("Something is going wrong: %w", err)
-	}
-	ServerCmd.Flags().StringVarP(&port, "port", "p", "50051", "server port")
-	err = viper.BindPFlag("port", ServerCmd.Flags().Lookup("port"))
 	if err != nil {
 		l.Logger.Fatalf("Something is going wrong: %w", err)
 	}
@@ -50,7 +44,7 @@ func startGrpcServer(cmd *cobra.Command, args []string) {
 	db.Init()
 	monitoring := monitoring.New(db, logger, cfg)
 
-	if err := grpcserver.Start(db, monitoring, logger); err != nil {
+	if err := grpcserver.Start(db, monitoring, logger, cfg); err != nil {
 		l.Logger.Fatalf("Something is going wrong: %w", err)
 	}
 }
