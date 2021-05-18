@@ -42,7 +42,7 @@ build_image:
     entrypoint: [""]
   script:
     - mkdir -p /kaniko/.docker
-    - /kaniko/executor --context . --dockerfile ./Deployments/Docker/Dockerfile --destination monitoring:$CI_COMMIT_TAG
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/deployments/docker/Dockerfile --destination monitoring:$CI_COMMIT_TAG
   tags:
     - docker
   dependencies:
