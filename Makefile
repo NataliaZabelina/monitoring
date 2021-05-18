@@ -34,7 +34,7 @@ install-lint-deps:
 lint: install-lint-deps
 	golangci-lint run ./...
 
-lint_ci:
+lint_ci: install-lint-deps
 	golangci-lint run --config=./.golangci.yml
 
 .PHONY: build run build-img run-img version test lint
