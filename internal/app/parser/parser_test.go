@@ -27,7 +27,7 @@ var (
 	}
 )
 
-func TestDiskIOParser(t *testing.T) {
+func TestDiskIOParserLinux(t *testing.T) {
 	db := &storage.DB{}
 	db.Init()
 	err := ParseDiskIOLinux(db, outputIostat)
@@ -41,4 +41,48 @@ func TestDiskIOParser(t *testing.T) {
 	require.InDelta(t, expectedIostat.Disk["loop2"].Param2, current.Disk["loop2"].Param2, 0.00001)
 	require.InDelta(t, expectedIostat.Disk["sda"].Param1, current.Disk["sda"].Param1, 0.00001)
 	require.InDelta(t, expectedIostat.Disk["sda"].Param2, current.Disk["sda"].Param2, 0.00001)
+}
+
+
+var (
+	outputTop = `top - 02:17:38 up 18 days,  1:54,  0 users,  load average: 0.23, 0.17, 0.12
+	Tasks:   2 total,   1 running,   1 sleeping,   0 stopped,   0 zombie
+    %Cpu(s):  0.0 us,  1.1 sy,  0.0 ni, 98.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+    MiB Mem :   1989.2 total,     82.9 free,    491.8 used,   1414.5 buff/cache
+    MiB Swap:   1024.0 total,    987.1 free,     36.9 used.   1399.7 avail Mem 
+	
+      PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+          1 root      20   0    3992   2784   2336 S   0.0   0.1   0:00.12 bash
+     7537 root      20   0    7864   2996   2636 R   0.0   0.1   0:00.00 top`
+
+	 expectedCPU = schema.CPULoadDto{
+	 	UserMode:   0.0,
+	 	SystemMode: 1.1,
+	 	Idle:       98.9,
+	 }
+
+	 expectedLoadAvg = schema.SystemLoadDto{
+	 	LoadAvg: 0.23,
+	 }
+	
+)
+
+func TestLoadAvgParserLinux(t *testing.T) {
+	db := &storage.DB{}
+	db.Init()
+	err := ParseSystemLoadLinux(db, outputTop)
+	require.Nil(t, err)
+	current := db.SystemTable.GetAverage(1)
+	require.InDelta(t, expectedLoadAvg.LoadAvg, current.LoadAvg, 0.00001)
+}
+
+func TestCPUParserLinux(t *testing.T) {
+	db := &storage.DB{}
+	db.Init()
+	err := ParseCPULoadLinux(db, outputTop)
+	require.Nil(t, err)
+	current := db.CPUTable.GetAverage(1)
+	require.InDelta(t, expectedCPU.UserMode, current.UserMode, 0.00001)
+	require.InDelta(t, expectedCPU.SystemMode, current.SystemMode, 0.00001)
+	require.InDelta(t, expectedCPU.Idle, current.Idle, 0.00001)
 }
