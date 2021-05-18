@@ -117,6 +117,21 @@ func (s *GrpcServer) GetInfo(req *api.Request, stream api.Monitoring_GetInfoServ
 				SystemMode:   float64(cpu.SystemMode),
 				Idle:         float64(cpu.Idle),
 			}
+
+			disks := s.db.DiskTable.GetAverage(req.Period)
+			diskIO := []*api.DiskIO{}
+			for k, v := range disks.Disk {
+				diskIO = append(diskIO, &api.DiskIO{
+					Device: k,
+					Tps:    float64(v.Param1),
+					KbPerS: float64(v.Param2),
+				})
+			}
+			data.DiskValue = &api.DiskResponse{
+				ResponseTime: timestamp,
+				Io:           diskIO,
+				Fs:           []*api.DiskFS{},
+			}
 			err := stream.Send(&data)
 			if err != nil {
 				return err

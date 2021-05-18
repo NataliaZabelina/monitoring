@@ -6,7 +6,6 @@ type DB struct {
 	CPUTable    CPUTable
 	SystemTable SystemTable
 	DiskTable   DiskTable
-	// DiskFSTable DiskFSTable
 	// SocketTable SocketTable
 	// TCPTable    TCPTable
 }
@@ -15,7 +14,6 @@ func (db *DB) Init() {
 	db.CPUTable = (&schema.CPULoadTable{}).Init()
 	db.SystemTable = (&schema.SystemLoadTable{}).Init()
 	db.DiskTable = (&schema.DiskTable{}).Init()
-	// db.DiskFSTable = (&schema.DiskFSTable{}).Init()
 	// db.SocketTable = (&schema.SocketLoadTable{}).Init()
 	// db.TCPTable = (&schema.TCPCountTable{}).Init()
 }

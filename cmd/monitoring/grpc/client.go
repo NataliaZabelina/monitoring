@@ -99,6 +99,8 @@ func collectStatistics(client api.MonitoringClient, timeout int32, period int32)
 		}
 
 		l.Logger.Info("Collected System Information")
-		l.Logger.Info(msg)
+		l.Logger.Infof("LOAD AVERAGE: %s", msg.SystemValue.String())
+		l.Logger.Infof("CPU: %s", msg.CpuValue.String())
+		l.Logger.Infof("DISK: %s", msg.DiskValue.String())
 	}
 }

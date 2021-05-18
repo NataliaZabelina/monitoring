@@ -44,6 +44,16 @@ func (m *Monitoring) Run(ctx context.Context) error {
 		}()
 	}
 
+	if m.cfg.Collector.Statistics.LoadDisk {
+		go func() {
+			err := m.newWorker(ctx, timoutCollection, "DislIO", command.GetDiskIO)
+			if err != nil {
+				m.logger.Error("Cannot start workerDiskIO", zap.Error(err))
+				return
+			}
+		}()
+	}
+
 	return nil
 }
 
