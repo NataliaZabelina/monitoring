@@ -144,7 +144,7 @@ func ParseDiskFSLinux(db *storage.DB, txt string) error {
 func splitInput(str string, trimmer string) []string {
 	lastIndex := strings.LastIndex(str, trimmer) + len(trimmer) - 1
 	str = strings.TrimLeft(str[lastIndex+1:], " ")
-	arr := strings.Split(str, ", ")
+	arr := strings.Split(str, ",")
 	return arr
 }
 
