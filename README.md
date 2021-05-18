@@ -10,7 +10,7 @@
  - make run_client
 
  - ./monitoring grpc_server --config=configs/config.json
- - ./monitoring grpc_client --server=":50051" --timeout=5 --period=15
+ - ./monitoring grpc_client --address=":50051" --timeout=5 --period=15
 
  Подробнее: 
  - ./monitoring --help
